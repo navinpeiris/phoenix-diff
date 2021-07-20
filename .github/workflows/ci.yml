@@ -9,6 +9,8 @@ jobs:
         with:
           otp-version: '22.2.8'
           elixir-version: '1.10.2'
+      - name: Download released earthly
+        run: "sudo /bin/sh -c 'wget -q https://github.com/earthly/earthly/releases/download/v0.4.5/earthly-linux-amd64 -O /usr/local/bin/earthly && chmod +x /usr/local/bin/earthly'"
       - uses: actions/cache@v2
         with:
           path: |

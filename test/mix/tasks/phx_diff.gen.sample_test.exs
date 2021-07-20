@@ -1,5 +1,5 @@
 defmodule Mix.Tasks.PhxDiff.Gen.SampleTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case
 
   alias Mix.Tasks.PhxDiff.Gen
   alias PhxDiff.Diffs
@@ -80,6 +80,62 @@ defmodule Mix.Tasks.PhxDiff.Gen.SampleTest do
                     {:phoenix_pubsub, "~> 1.1"},
                     {:phoenix_ecto, "~> 4.0"},
                     {:ecto_sql, "~> 3.1"},
+             """
+  end
+
+  test "the appropriate diff is returned when generating phoenix 1.3.x apps" do
+    Gen.Sample.run(["1.3.3"])
+
+    Gen.Sample.run(["1.3.4"])
+
+    assert {:ok, diff} =
+             Diffs.get_diff(
+               Diffs.fetch_default_app_specification!("1.3.3"),
+               Diffs.fetch_default_app_specification!("1.3.4")
+             )
+
+    assert diff =~
+             """
+             @@ -33,7 +33,7 @@
+                # Type `mix help deps` for examples and options.
+                defp deps do
+                  [
+             -      {:phoenix, "~> 1.3.3"},
+             +      {:phoenix, "~> 1.3.4"},
+                    {:phoenix_pubsub, "~> 1.0"},
+                    {:phoenix_ecto, "~> 3.2"},
+                    {:postgrex, ">= 0.0.0"},
+             """
+  end
+
+  test "the appropriate diff is returned when generating phoenix 1.0.x apps" do
+    Gen.Sample.run(["1.0.3"])
+
+    Gen.Sample.run(["1.0.4"])
+
+    assert {:ok, diff} =
+             Diffs.get_diff(
+               Diffs.fetch_default_app_specification!("1.0.3"),
+               Diffs.fetch_default_app_specification!("1.0.4")
+             )
+
+    assert diff =~
+             """
+             @@ -30,7 +30,7 @@
+                #
+                # Type `mix help deps` for examples and options.
+                defp deps do
+             -    [{:phoenix, "~> 1.0.3"},
+             +    [{:phoenix, "~> 1.0.4"},
+                   {:phoenix_ecto, "~> 1.1"},
+                   {:postgrex, ">= 0.0.0"},
+                   {:phoenix_html, "~> 2.1"},
+             """
+
+    assert diff =~
+             """
+             -    :ok
+             +    {:ok, conn: Phoenix.ConnTest.conn()}
              """
   end
 

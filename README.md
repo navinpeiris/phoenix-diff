@@ -6,7 +6,27 @@ A phoenix application to show the changes between different versions of generate
 
 Currently hosted at [http://www.phoenixdiff.org](http://www.phoenixdiff.org)
 
-### Adding a new version of phoenix
+## Set up
+
+PhoenixDiff uses [Earthly](https://earthly.dev) to be generate sample projects to use with diffs:
+
+### OS X
+1. Install Docker for Mac
+1. Install Earthly (`brew install earthly`)
+
+### Linux
+
+1. Install Docker
+1. Add yourself to the `docker` group so you don't have to use sudo to run docker. `sudo usermod -aG docker <your-user>`
+1. Install Earthly
+1. Create the follow earthly config file (`~/.earthly/config.yml`) so it works without having to use sudo
+
+    ```yaml
+    global:
+      buildkit_additional_args: ["--userns", "host"]
+    ```
+
+## Adding a new version of phoenix
 
 To add a new version of phoenix, run the following mix command
 

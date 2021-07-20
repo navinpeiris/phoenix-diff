@@ -55,19 +55,20 @@ defmodule PhxDiff.Diffs.AppRepo do
   @spec generate_sample_app(Config.t(), AppSpecification.t()) ::
           {:ok, String.t()} | {:error, :unknown_version}
   def generate_sample_app(%Config{} = config, %AppSpecification{} = app_spec) do
-    with {:ok, app_dir} <- AppGenerator.generate(config, app_spec),
-         {:ok, path_in_storage} <- store_generated_app(config, app_spec, app_dir) do
+    with {:ok, job} <- AppGenerator.generate(config, app_spec),
+         {:ok, path_in_storage} <- store_generated_app(config, app_spec, job) do
       {:ok, path_in_storage}
     end
   end
 
-  defp store_generated_app(config, app_spec, source_path) do
+  defp store_generated_app(config, app_spec, job) do
     destination_path = app_path(config, app_spec)
 
     File.rm_rf(destination_path)
     File.mkdir_p!(destination_path)
 
-    File.rename!(source_path, destination_path)
+    File.rename!(job.project_path, destination_path)
+    File.rm_rf(job.base_path)
 
     {:ok, destination_path}
   end

@@ -1,5 +1,5 @@
 defmodule PhxDiff.DiffsTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case
 
   import PhxDiff.TestSupport.FileHelpers
 
